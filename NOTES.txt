@@ -1,0 +1,38 @@
+aes block size 16 bytes
+ecc key agreement 32 bytes
+
+#aeskey 16 bytes
+ecckey 65 bytes
+iv 16 bytes
+
+account 16
+amount 10
+pin 6
+
+total 113
+
+ec1.pub().get_der(string)
+ec1.save_key('eccpair.pem',None)
+
+Rand.rand_bytes(quantity)
+
+---
+
+curve_OID_len || curve_OID || public_key_alg_ID ||
+           01 || KDF_hash_ID || AES_alg_ID for AESKeyWrap ||
+          "AnonymousSender" || recipient_fingerprint
+
+08
+2A8648CE3D030107
+22
+01
+08
+00
+416e6f6e796d6f757353656e646572 #encoded word "AnonymousSender"
+81e8f11d174054ec6032aeddde6f36bc905e1b1d #fingerprint
+
+-----BEGIN EC PRIVATE KEY-----
+MHcCAQEEIH8TNBOfV+JWVBr25KfjJ1007paZ/JnrvjxFzZThUgSToAoGCCqGSM49
+AwEHoUQDQgAEtv1eCFuapm3ku1AdTt5eK1IVaAzH2MBQqreo3FBSE8EHxCsEGRvK
+auFV+AgDEQotZbdqzAojRoCjuhZcYP73Pg==
+-----END EC PRIVATE KEY-----
