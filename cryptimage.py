@@ -4,13 +4,34 @@ import struct, binascii
 _encrypt=1
 _decrypt=0
 
+def build_message(pubkey, ciphertext):
+	data = chr(1) + chr(len(pubkey)) + pubkey + chr(len(ciphertext)) + ciphertext
+	return(data)
+
+def build_asn1(key):
+	"""
+	30 + 39 | 59 + \
+	301306072a8648ce3d020106082a8648ce3d03010703
+	22 | 42 + 00
+	"""
+	keylen = len(key)
+	oids = binascii.a2b_hex("301306072a8648ce3d020106082a8648ce3d03010703")
+	asn1 = chr(0x30) + chr(24+keylen) + oids + chr(1+keylen) + chr(0) + key
+	return(asn1)
+
+
 def parse_input(data):
-	version = ord(data[0])
-	keylen = ord(data[1])
-	key = data[2:keylen+2]
-	cryptlen = ord(data[keylen+2])
-	crypt = data[keylen+3:keylen+3+cryptlen]
-	return (key, crypt)
+	offset = 0
+	version = ord(data[offset])
+	offset = offset + 1
+	keylen = ord(data[offset])
+	offset = offset + 1
+	key = data[offset:offset+keylen]
+	offset = offset + keylen
+	cryptlen = ord(data[offset])
+	offset = offset + 1
+	crypt = data[offset:offset+cryptlen]
+	return(key, crypt)
 
 def encrypt_data(key, data):
 	cipher = EVP.Cipher('aes_128_ecb', key, '', _encrypt)
@@ -27,6 +48,8 @@ def decrypt_data(key, data):
 
 
 def compress_key(key):
+	if ord(key[0]) == 2 or ord(key[0]) == 3:
+		return(key)
 	if ord(key[0]) != 4:
 		raise Exception, "Invalid key"
 	if ord(key[-1]) % 2 == 0:
