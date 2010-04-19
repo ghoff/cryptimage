@@ -1,5 +1,6 @@
 from M2Crypto import EC, EVP
 import binascii, sys, cryptimage
+from pydmtx import DataMatrix
 debug=0
 
 ecpubkey = binascii.a2b_hex('02b6fd5e085b9aa66de4bb501d4ede5e2b5215680cc7d8c050aab7a8dc505213c1')
@@ -26,6 +27,11 @@ if debug: sys.stderr.write("dk = %s\n" % binascii.b2a_hex(dk))
 data="Hello World!"
 ct = cryptimage.encrypt_data(dk,data)
 
-sys.stdout.write(cryptimage.build_message(ephpub, ct))
+#sys.stdout.write(cryptimage.build_message(ephpub, ct))
+message = cryptimage.build_message(ephpub, ct)
+
+dm_write = DataMatrix(scheme=DataMatrix.DmtxSchemeBase256)
+dm_write.encode(message)
+dm_write.save("dm.png", "png")
 
 sys.exit(0)

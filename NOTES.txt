@@ -2,11 +2,11 @@ aes block size 16 bytes
 ecc key agreement 32 bytes
 
 #aeskey 16 bytes
-ecckey 65 bytes
+ecckey 65 bytes -> compressed 33 bytes
 iv 16 bytes
 
-account 16
-amount 10
+account 16 0-9
+amount 10 0-9 + ., always include cents and remove .?
 pin 6
 
 total 113
