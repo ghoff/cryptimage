@@ -4,9 +4,14 @@ import struct, binascii
 _encrypt=1
 _decrypt=0
 
+#not done yet
+def encode(account, amount, pin):
+	return("Hello World!")
+
 def build_message(pubkey, ciphertext):
 	data = chr(1) + chr(len(pubkey)) + pubkey + chr(len(ciphertext)) + ciphertext
 	return(data)
+
 
 def build_asn1(key):
 	"""
