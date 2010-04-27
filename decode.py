@@ -4,13 +4,12 @@ from pydmtx import DataMatrix
 from PIL import Image
 debug=0
 
+#read in the data from the image
 dm_read = DataMatrix(scheme=DataMatrix.DmtxSchemeBase256)
 img = Image.open("dm.png")
 data = dm_read.decode(img.size[0],img.size[1],img.tostring())
-#print data
-#sys.exit(0)
 
-#data = sys.stdin.read()
+#extract public key and encrypted message
 ephpub, ciphertext = cryptimage.parse_input(data)
 ephemeral = EC.pub_key_from_der(cryptimage.build_asn1(ephpub))
 
@@ -23,6 +22,7 @@ auFV+AgDEQotZbdqzAojRoCjuhZcYP73Pg==
 -----END EC PRIVATE KEY-----
 """
 
+#derive shared key
 ecbio = BIO.MemoryBuffer()
 ecbio.write(ecpairpem)
 ecpair = EC.load_key_bio(ecbio)
@@ -37,7 +37,11 @@ shared = ecpair.compute_dh_key(ephemeral.pub())
 
 dk=cryptimage.KDF(shared[:len(shared)/2],128,fingerprint)
 
+#decrypt message, extract contents and print results
 plaintext = cryptimage.decrypt_data(dk,ciphertext)
-print "decrypted text = %s" % plaintext
+[account,amount,pin]=cryptimage.datadecode(binascii.b2a_hex(plaintext))
+print "Destination account number is: " + account
+print "Amount to be transfered: %.2f" % (float(amount)/100)
+print "Please enter pin %s to verify transaction" % pin
 
 sys.exit(0)

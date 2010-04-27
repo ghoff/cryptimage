@@ -24,15 +24,13 @@ dk=cryptimage.KDF(shared[:len(shared)/2],128,fingerprint)
 
 if debug: sys.stderr.write("dk = %s\n" % binascii.b2a_hex(dk))
 
-#data="Hello World!"
-account=2000111122223333
-amount=15000.50
-pin=7654
+account="2000111122223333"
+amount="1500050"
+pin="7654"
 
-data=cryptimage.encode(account,amount,pin)
-ct = cryptimage.encrypt_data(dk,data)
+data=cryptimage.dataencode(account,amount,pin)
+ct = cryptimage.encrypt_data(dk,binascii.a2b_hex(data))
 
-#sys.stdout.write(cryptimage.build_message(ephpub, ct))
 message = cryptimage.build_message(ephpub, ct)
 
 dm_write = DataMatrix(scheme=DataMatrix.DmtxSchemeBase256)

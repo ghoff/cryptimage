@@ -1,12 +1,21 @@
 from M2Crypto import EVP
-import struct, binascii
+import struct, binascii, dpd
 
 _encrypt=1
 _decrypt=0
 
 #not done yet
-def encode(account, amount, pin):
-	return("Hello World!")
+def dataencode(account, amount, pin):
+	return(dpd.dpdpack(account+'0'*(11-len(amount))+amount+pin))
+
+
+def datadecode(input):
+	data=dpd.dpdunpack(input)
+	account=data[0:16]
+	amount=data[16:27]
+	pin=data[27:31]
+	return([account, amount, pin])
+
 
 def build_message(pubkey, ciphertext):
 	data = chr(1) + chr(len(pubkey)) + pubkey + chr(len(ciphertext)) + ciphertext
