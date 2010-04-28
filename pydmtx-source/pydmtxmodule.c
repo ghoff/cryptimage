@@ -26,7 +26,6 @@ Contact: mike@dragonflylogic.com
 
 /* $Id: pydmtxmodule.c 863 2009-08-27 17:16:11Z mblaughton $ */
 
-#include <string.h>
 #include <Python.h>
 #include <dmtx.h>
 
@@ -75,14 +74,14 @@ dmtx_encode(PyObject *self, PyObject *arglist, PyObject *kwargs)
    DmtxEncode *enc;
    int row, col;
    int rgb[3];
-   static char *kwlist[] = { "data", "data_size", "module_size", "margin_size",
+   static char *kwlist[] = { "data", "module_size", "margin_size",
                              "scheme", "shape", "plotter", "start", "finish",
                              "context", NULL };
 
    /* Parse out the options which are applicable */
    PyObject *filtered_kwargs;
    filtered_kwargs = PyDict_New();
-   count = 2; /* Skip the first 2 keywords as they are sent in arglist */
+   count = 1; /* Skip the first keyword as it is sent in arglist */
    while(kwlist[count]){
       if(PyDict_GetItemString(kwargs, kwlist[count])) {
          PyDict_SetItemString(filtered_kwargs, kwlist[count],PyDict_GetItemString(kwargs, kwlist[count]));
@@ -90,7 +89,7 @@ dmtx_encode(PyObject *self, PyObject *arglist, PyObject *kwargs)
       count++;
    }
 
-   if(!PyArg_ParseTupleAndKeywords(arglist, filtered_kwargs, "siiiii|OOOO", kwlist,
+   if(!PyArg_ParseTupleAndKeywords(arglist, filtered_kwargs, "s#iiii|OOOO", kwlist,
          &data, &data_size, &module_size, &margin_size, &scheme, &shape,
          &plotter, &start_cb, &finish_cb, &context))
       return NULL;
@@ -266,7 +265,7 @@ dmtx_decode(PyObject *self, PyObject *arglist, PyObject *kwargs)
          dmtxMatrix3VMultiplyBy(&p11, reg->fit2raw);
          dmtxMatrix3VMultiplyBy(&p01, reg->fit2raw);
 
-         PyList_Append(output, Py_BuildValue("s((ii)(ii)(ii)(ii))", msg->output,
+         PyList_Append(output, Py_BuildValue("s#((ii)(ii)(ii)(ii))", msg->output, msg->outputIdx,
                (int)((shrink * p00.X) + 0.5), height - 1 - (int)((shrink * p00.Y) + 0.5),
                (int)((shrink * p10.X) + 0.5), height - 1 - (int)((shrink * p10.Y) + 0.5),
                (int)((shrink * p11.X) + 0.5), height - 1 - (int)((shrink * p11.Y) + 0.5),
