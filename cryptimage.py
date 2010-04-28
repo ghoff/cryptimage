@@ -4,13 +4,19 @@ import struct, binascii, dpd
 _encrypt=1
 _decrypt=0
 
-#not done yet
 def dataencode(account, amount, pin):
-	return(dpd.dpdpack(account+'0'*(11-len(amount))+amount+pin))
+	data = dpd.dpdpack(account+'0'*(11-len(amount))+amount+pin)
+	data = binascii.a2b_hex('0100'+data)
+	#only pad to 15 bytes because padding can't be disabled in M2Crypto 0.19.1
+	return(data)
 
 
 def datadecode(input):
-	data=dpd.dpdunpack(input)
+	if input[0] != chr(1):
+		print "bad version number"
+		return [0,0,0]
+	data = binascii.b2a_hex(input[2:])
+	data=dpd.dpdunpack(data)
 	account=data[0:16]
 	amount=data[16:27]
 	pin=data[27:31]

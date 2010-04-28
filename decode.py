@@ -39,7 +39,7 @@ dk=cryptimage.KDF(shared[:len(shared)/2],128,fingerprint)
 
 #decrypt message, extract contents and print results
 plaintext = cryptimage.decrypt_data(dk,ciphertext)
-[account,amount,pin]=cryptimage.datadecode(binascii.b2a_hex(plaintext))
+[account,amount,pin]=cryptimage.datadecode(plaintext)
 print "Destination account number is: " + account
 print "Amount to be transfered: %.2f" % (float(amount)/100)
 print "Please enter pin %s to verify transaction" % pin

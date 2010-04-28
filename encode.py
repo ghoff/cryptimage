@@ -29,7 +29,7 @@ amount="1500050"
 pin="7654"
 
 data=cryptimage.dataencode(account,amount,pin)
-ct = cryptimage.encrypt_data(dk,binascii.a2b_hex(data))
+ct = cryptimage.encrypt_data(dk,data)
 
 message = cryptimage.build_message(ephpub, ct)
 
